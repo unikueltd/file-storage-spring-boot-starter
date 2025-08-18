@@ -19,6 +19,7 @@ package com.yookue.springstarter.filestorage.property;
 
 import java.io.Serializable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import com.yookue.springstarter.filestorage.config.FileStorageAutoConfiguration;
 import com.yookue.springstarter.filestorage.enumeration.FileStorageType;
 import lombok.Getter;
@@ -58,20 +59,24 @@ public class FileStorageProperties implements Serializable {
     /**
      * The properties of local storage
      */
-    private LocalFileStorageProperties local = new LocalFileStorageProperties();
+    @NestedConfigurationProperty
+    private final LocalFileStorageProperties local = new LocalFileStorageProperties();
 
     /**
      * The properties of minio storage
      */
-    private MinioFileStorageProperties minio = new MinioFileStorageProperties();
+    @NestedConfigurationProperty
+    private final MinioFileStorageProperties minio = new MinioFileStorageProperties();
 
     /**
      * The properties of aliyun-oss storage
      */
-    private AliyunFileStorageProperties aliyun = new AliyunFileStorageProperties();
+    @NestedConfigurationProperty
+    private final AliyunFileStorageProperties aliyun = new AliyunFileStorageProperties();
 
     /**
      * The properties of tencent-cos storage
      */
-    private TencentFileStorageProperties tencent = new TencentFileStorageProperties();
+    @NestedConfigurationProperty
+    private final TencentFileStorageProperties tencent = new TencentFileStorageProperties();
 }
