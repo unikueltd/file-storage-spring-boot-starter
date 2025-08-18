@@ -34,6 +34,7 @@ import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.yookue.commonplexus.javaseutil.exception.FileStorageException;
 import com.yookue.commonplexus.javaseutil.identity.JdkUuidGenerator;
+import com.yookue.commonplexus.javaseutil.util.DurationUtilsWraps;
 import com.yookue.commonplexus.javaseutil.util.JdkDateWraps;
 import com.yookue.commonplexus.javaseutil.util.LocalDateWraps;
 import com.yookue.springstarter.filestorage.composer.FileStorageComposer;
@@ -159,7 +160,7 @@ public class TencentFileStorageComposer implements FileStorageComposer, Initiali
         if (StringUtils.isBlank(objectPath)) {
             return null;
         }
-        if (expiration == null) {
+        if (DurationUtilsWraps.isNotPositive(expiration)) {
             return FileObjectStorageUtils.buildObjectUrl(FileStorageType.TENCENT, objectPath, properties.getDomain(), properties.getEndpoint(), properties.getBucketName(), BooleanUtils.isTrue(properties.getSecureHttp()));
         }
         Date expiryDate = JdkDateWraps.plusTemporal(JdkDateWraps.getCurrentDateTime(), expiration);

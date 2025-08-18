@@ -165,7 +165,7 @@ public class MinioFileStorageComposer implements FileStorageComposer, Initializi
         if (StringUtils.isBlank(objectPath)) {
             return null;
         }
-        if (expiration == null) {
+        if (DurationUtilsWraps.isNotPositive(expiration)) {
             String endpoint = StringUtils.join(properties.getEndpoint(), CharVariantConst.COLON, properties.getPort());
             return FileObjectStorageUtils.buildObjectUrl(FileStorageType.MINIO, objectPath, null, endpoint, properties.getBucketName(), BooleanUtils.isTrue(properties.getSecureHttp()));
         }

@@ -35,6 +35,7 @@ import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.yookue.commonplexus.javaseutil.exception.FileStorageException;
 import com.yookue.commonplexus.javaseutil.identity.JdkUuidGenerator;
+import com.yookue.commonplexus.javaseutil.util.DurationUtilsWraps;
 import com.yookue.commonplexus.javaseutil.util.JdkDateWraps;
 import com.yookue.commonplexus.javaseutil.util.LocalDateWraps;
 import com.yookue.commonplexus.javaseutil.util.ObjectUtilsWraps;
@@ -163,7 +164,7 @@ public class AliyunFileStorageComposer implements FileStorageComposer, Initializ
         if (StringUtils.isBlank(objectPath)) {
             return null;
         }
-        if (expiration == null) {
+        if (DurationUtilsWraps.isNotPositive(expiration)) {
             return FileObjectStorageUtils.buildObjectUrl(FileStorageType.ALIYUN, objectPath, properties.getDomain(), properties.getEndpoint(), properties.getBucketName(), BooleanUtils.isTrue(properties.getSecureHttp()));
         }
         Date expiryDate = JdkDateWraps.plusTemporal(JdkDateWraps.getCurrentDateTime(), expiration);
