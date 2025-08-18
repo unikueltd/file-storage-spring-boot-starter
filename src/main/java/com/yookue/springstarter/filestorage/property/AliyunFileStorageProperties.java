@@ -146,7 +146,7 @@ public class AliyunFileStorageProperties implements Serializable {
     /**
      * The callback body for upload completion notification
      * <p>
-     * For example: "key=$(key)&etag=$(etag)"
+     * For example: {@code "key=$(key)&etag=$(etag)"}
      */
     private String callbackBody;
 
