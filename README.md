@@ -68,8 +68,8 @@ public class DemoService {
         // Download an object as a file
         storageComposer.downloadObjectTo(objectKey, pathPrefix, targetFile);
 
-        // Delete an object
-        storageComposer.deleteObject(objectKey, pathPrefix);
+        // Remove an object
+        storageComposer.removeObject(objectKey, pathPrefix);
 
         // Get the object URL
         storageComposer.getObjectUrl(objectKey, pathPrefix);

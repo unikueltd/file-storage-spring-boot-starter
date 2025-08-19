@@ -225,12 +225,12 @@ public interface FileStorageComposer {
     }
 
     /**
-     * Deletes an object in the storage
+     * Removes an object in the storage
      *
      * @param objectKey The object key identifier
      * @param pathPrefix The prefix before the filename, usually the category or the owner, can be null
      */
-    void deleteObject(@Nullable String objectKey, @Nullable String pathPrefix) throws FileStorageException;
+    void removeObject(@Nullable String objectKey, @Nullable String pathPrefix) throws FileStorageException;
 
     /**
      * Returns the object access URL

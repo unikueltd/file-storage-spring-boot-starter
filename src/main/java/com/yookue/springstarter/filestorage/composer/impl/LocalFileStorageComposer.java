@@ -117,7 +117,7 @@ public class LocalFileStorageComposer implements FileStorageComposer, Initializi
     }
 
     @Override
-    public void deleteObject(@Nullable String objectKey, @Nullable String pathPrefix) throws FileStorageException {
+    public void removeObject(@Nullable String objectKey, @Nullable String pathPrefix) throws FileStorageException {
         String objectPath = FileObjectStorageUtils.recurObjectPath(objectKey, pathPrefix);
         if (StringUtils.isBlank(objectPath)) {
             return;

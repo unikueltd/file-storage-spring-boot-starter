@@ -140,7 +140,7 @@ public class AliyunFileStorageComposer implements FileStorageComposer, Initializ
 
     @Override
     @SuppressWarnings("DuplicatedCode")
-    public void deleteObject(@Nullable String objectKey, @Nullable String pathPrefix) throws FileStorageException {
+    public void removeObject(@Nullable String objectKey, @Nullable String pathPrefix) throws FileStorageException {
         if (StringUtils.isAnyBlank(objectKey, properties.getBucketName())) {
             return;
         }
