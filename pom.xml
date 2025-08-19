@@ -50,6 +50,7 @@
         <spring-boot.version>3.5.3</spring-boot.version>
 
         <aliyun-oss.version>3.18.3</aliyun-oss.version>
+        <commons-io.version>2.20.0</commons-io.version>
         <minio.version>8.5.17</minio.version>
         <tencent-cos.version>5.6.251</tencent-cos.version>
         <plexus-spring-condition.version>3.5.3</plexus-spring-condition.version>
@@ -94,13 +95,28 @@
                     <groupId>com.google.errorprone</groupId>
                     <artifactId>error_prone_annotations</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
         </dependency>
         <dependency>
             <groupId>com.qcloud</groupId>
             <artifactId>cos_api</artifactId>
             <version>${tencent-cos.version}</version>
             <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.squareup.okhttp3</groupId>
+                    <artifactId>okhttp</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.minio</groupId>
