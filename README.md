@@ -32,6 +32,7 @@ spring:
             access-key: 'minio'
             secret-key: 'minio123'
             bucket-name: 'demo-bucket'
+            domain: 'https://cdn.example.com'
             access-control: 'public-read'
         aliyun:
             endpoint: 'https://oss-cn-beijing.aliyuncs.com'

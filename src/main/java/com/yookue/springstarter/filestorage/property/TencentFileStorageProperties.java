@@ -71,7 +71,7 @@ public class TencentFileStorageProperties implements Serializable {
     private String bucketName;
 
     /**
-     * Custom domain
+     * The domain of endpoint for accessing files
      * <p>
      * For example: {@code "https://cdn.example.com"}
      */

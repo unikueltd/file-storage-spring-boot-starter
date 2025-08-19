@@ -72,9 +72,9 @@ public class AliyunFileStorageProperties implements Serializable {
     private String bucketName;
 
     /**
-     * The custom domain for accessing files
+     * The domain of endpoint for accessing files
      * <p>
-     * If not specified, the default OSS domain will be used
+     * For example: {@code "https://cdn.example.com"}
      */
     private String domain;
 
