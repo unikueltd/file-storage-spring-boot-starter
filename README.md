@@ -32,17 +32,19 @@ spring:
             access-key: 'minio'
             secret-key: 'minio123'
             bucket-name: 'demo-bucket'
-            bucket-public: true
+            access-control: 'public-read'
         aliyun:
             endpoint: 'https://oss-cn-beijing.aliyuncs.com'
             access-key: 'your-access-key'
             secret-key: 'your-secret-key'
             bucket-name: 'demo-bucket'
+            access-control: 'public-read'
         tencent:
             endpoint: 'https://cos.ap-beijing.myqcloud.com'
             secret-id: 'your-secret-id'
             secret-key: 'your-secret-key'
             bucket-name: 'demo-bucket'
+            access-control: 'public-read'
 ```
 
 ## Document

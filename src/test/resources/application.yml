@@ -15,4 +15,3 @@ spring:
             access-key: 'minioadmin'
             secret-key: 'minioadmin'
             bucket-name: 'demo-bucket'
-            bucket-public: true
