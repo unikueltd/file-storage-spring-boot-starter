@@ -47,7 +47,7 @@ spring:
             access-control: 'public-read'
 ```
 
-- Then, in your code, you can use `FileStorageService` to store and retrieve files
+- Then, in your code, you can use `FileStorageComposer` to store and retrieve files
 
 ```java
 @Service
