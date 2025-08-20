@@ -63,8 +63,8 @@ public abstract class AliyunOssConfigUtils {
         }
         CredentialsProvider provider = new DefaultCredentialProvider(properties.getAccessKeyId(), properties.getAccessKeySecret());
         ClientBuilderConfiguration configuration = new ClientBuilderConfiguration();
-        ObjectUtilsWraps.ifNotNull(properties.getConnectionTimeout(), duration -> configuration.setConnectionTimeout((int) duration.toMillis()));
-        ObjectUtilsWraps.ifNotNull(properties.getSocketTimeout(), duration -> configuration.setSocketTimeout((int) duration.toMillis()));
+        ObjectUtilsWraps.ifNotNull(properties.getConnectionTimeout(), item -> configuration.setConnectionTimeout((int) item.toMillis()));
+        ObjectUtilsWraps.ifNotNull(properties.getSocketTimeout(), item -> configuration.setSocketTimeout((int) item.toMillis()));
         ObjectUtilsWraps.ifNotNull(properties.getMaxConnections(), configuration::setMaxConnections);
         configuration.setProtocol(BooleanUtils.isTrue(properties.getSecureHttp()) ? Protocol.HTTPS : Protocol.HTTP);
         if (StringUtils.isNotBlank(properties.getProxyHost())) {

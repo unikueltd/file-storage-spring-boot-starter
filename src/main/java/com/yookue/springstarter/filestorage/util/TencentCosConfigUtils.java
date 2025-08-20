@@ -64,10 +64,10 @@ public abstract class TencentCosConfigUtils {
         Region region = new Region(properties.getRegion());
         ClientConfig clientConfig = new ClientConfig(region);
         clientConfig.setHttpProtocol(BooleanUtils.isTrue(properties.getSecureHttp()) ? HttpProtocol.https : HttpProtocol.http);
-        ObjectUtilsWraps.ifNotNull(properties.getConnectionTimeout(), duration -> clientConfig.setConnectionTimeout((int) duration.toMillis()));
-        ObjectUtilsWraps.ifNotNull(properties.getSocketTimeout(), duration -> clientConfig.setSocketTimeout((int) duration.toMillis()));
+        ObjectUtilsWraps.ifNotNull(properties.getConnectionTimeout(), item -> clientConfig.setConnectionTimeout((int) item.toMillis()));
+        ObjectUtilsWraps.ifNotNull(properties.getSocketTimeout(), item -> clientConfig.setSocketTimeout((int) item.toMillis()));
         ObjectUtilsWraps.ifNotNull(properties.getMaxConnections(), clientConfig::setMaxConnectionsCount);
-        ObjectUtilsWraps.ifNotNull(properties.getConnectionRequestTimeout(), duration -> clientConfig.setConnectionRequestTimeout((int) duration.toMillis()));
+        ObjectUtilsWraps.ifNotNull(properties.getConnectionRequestTimeout(), item -> clientConfig.setConnectionRequestTimeout((int) item.toMillis()));
         if (StringUtils.isNotBlank(properties.getProxyHost())) {
             clientConfig.setHttpProxyIp(properties.getProxyHost());
             ObjectUtilsWraps.ifNotNull(properties.getProxyPort(), clientConfig::setHttpProxyPort);
@@ -77,7 +77,7 @@ public abstract class TencentCosConfigUtils {
             }
         }
         StringUtilsWraps.ifNotBlank(properties.getUserAgent(), clientConfig::setUserAgent);
-        ObjectUtilsWraps.ifNotNull(properties.getSignExpired(), duration -> clientConfig.setSignExpired(duration.getSeconds()));
+        ObjectUtilsWraps.ifNotNull(properties.getSignExpired(), item -> clientConfig.setSignExpired(item.getSeconds()));
         COSClient cosClient = new COSClient(credentials, clientConfig);
         if (StringUtils.isNotBlank(properties.getBucketName())) {
             if (BooleanUtils.isTrue(properties.getAutoCreateBucket()) && !cosClient.doesBucketExist(properties.getBucketName())) {
