@@ -19,6 +19,8 @@ package com.yookue.springstarter.filestorage.property;
 
 import java.io.Serializable;
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import org.springframework.boot.convert.DurationUnit;
 import com.qcloud.cos.model.CannedAccessControlList;
 import lombok.Getter;
 import lombok.Setter;
@@ -96,6 +98,7 @@ public class TencentFileStorageProperties implements Serializable {
      * <p>
      * Default is 30 seconds
      */
+    @DurationUnit(value = ChronoUnit.SECONDS)
     private Duration connectionTimeout = Duration.ofSeconds(30);
 
     /**
@@ -103,6 +106,7 @@ public class TencentFileStorageProperties implements Serializable {
      * <p>
      * Default is 30 seconds
      */
+    @DurationUnit(value = ChronoUnit.SECONDS)
     private Duration socketTimeout = Duration.ofSeconds(30);
 
     /**
@@ -142,6 +146,7 @@ public class TencentFileStorageProperties implements Serializable {
      * <p>
      * Default is 1 hour
      */
+    @DurationUnit(value = ChronoUnit.HOURS)
     private Duration signExpired = Duration.ofHours(1);
 
     /**
@@ -149,5 +154,6 @@ public class TencentFileStorageProperties implements Serializable {
      * <p>
      * Default is 30 seconds
      */
+    @DurationUnit(value = ChronoUnit.SECONDS)
     private Duration connectionRequestTimeout = Duration.ofSeconds(30);
 }

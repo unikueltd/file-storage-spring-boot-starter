@@ -19,6 +19,8 @@ package com.yookue.springstarter.filestorage.property;
 
 import java.io.Serializable;
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import org.springframework.boot.convert.DurationUnit;
 import com.aliyun.oss.model.Callback;
 import com.aliyun.oss.model.CannedAccessControlList;
 import lombok.Getter;
@@ -90,6 +92,7 @@ public class AliyunFileStorageProperties implements Serializable {
      * <p>
      * Default is 50 seconds
      */
+    @DurationUnit(value = ChronoUnit.SECONDS)
     private Duration connectionTimeout = Duration.ofSeconds(50);
 
     /**
@@ -97,6 +100,7 @@ public class AliyunFileStorageProperties implements Serializable {
      * <p>
      * Default is 50 seconds
      */
+    @DurationUnit(value = ChronoUnit.SECONDS)
     private Duration socketTimeout = Duration.ofSeconds(50);
 
     /**
