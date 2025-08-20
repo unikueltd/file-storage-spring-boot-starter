@@ -31,9 +31,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import com.yookue.commonplexus.javaseutil.exception.FileStorageException;
 import com.yookue.commonplexus.javaseutil.util.ObjectUtilsWraps;
 import com.yookue.springstarter.filestorage.enumeration.FileStorageType;
+import com.yookue.springstarter.filestorage.exception.FileStorageException;
 
 
 /**
