@@ -61,7 +61,7 @@ public class AliyunFileStorageComposer implements FileStorageComposer, Initializ
     private OSS ossClient;
 
     @Override
-    public void afterPropertiesSet() {
+    public void afterPropertiesSet() throws Exception {
         ossClient = AliyunOssConfigUtils.ossClient(properties);
     }
 

@@ -59,7 +59,7 @@ public class TencentFileStorageComposer implements FileStorageComposer, Initiali
     private COSClient cosClient;
 
     @Override
-    public void afterPropertiesSet() {
+    public void afterPropertiesSet() throws Exception {
         cosClient = TencentCosConfigUtils.cosClient(properties);
     }
 

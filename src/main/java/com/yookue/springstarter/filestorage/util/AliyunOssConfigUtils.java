@@ -51,7 +51,8 @@ public abstract class AliyunOssConfigUtils {
      * @throws IllegalArgumentException if required properties are missing
      */
     @Nonnull
-    public static OSS ossClient(@Nonnull AliyunFileStorageProperties properties) {
+    @SuppressWarnings("RedundantThrows")
+    public static OSS ossClient(@Nonnull AliyunFileStorageProperties properties) throws Exception {
         if (StringUtils.isBlank(properties.getEndpoint())) {
             throw new IllegalArgumentException("Endpoint is required for OSS client");
         }

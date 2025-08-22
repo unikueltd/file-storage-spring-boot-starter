@@ -64,7 +64,7 @@ public class MinioFileStorageComposer implements FileStorageComposer, Initializi
     private MinioClient minioClient;
 
     @Override
-    public void afterPropertiesSet() {
+    public void afterPropertiesSet() throws Exception {
         minioClient = MinioConfigWraps.minioClient(properties);
     }
 

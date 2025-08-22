@@ -50,7 +50,8 @@ public abstract class TencentCosConfigUtils {
      * @throws CosClientException if failed to create COS client
      */
     @Nonnull
-    public static COSClient cosClient(@Nonnull TencentFileStorageProperties properties) {
+    @SuppressWarnings("RedundantThrows")
+    public static COSClient cosClient(@Nonnull TencentFileStorageProperties properties) throws Exception {
         if (StringUtils.isBlank(properties.getSecretId())) {
             throw new IllegalArgumentException("SecretId is required for COS client");
         }
