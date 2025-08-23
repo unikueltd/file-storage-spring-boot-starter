@@ -70,7 +70,7 @@ public abstract class AliyunOssConfigUtils {
         configuration.setProtocol(BooleanUtils.isTrue(properties.getSecureHttp()) ? Protocol.HTTPS : Protocol.HTTP);
         if (StringUtils.isNotBlank(properties.getProxyHost())) {
             configuration.setProxyHost(properties.getProxyHost());
-            ObjectUtilsWraps.ifNotNull(properties.getProxyPort(), configuration::setProxyPort);
+            configuration.setProxyPort(properties.getProxyPort());
             if (StringUtils.isNotBlank(properties.getProxyUsername())) {
                 configuration.setProxyUsername(properties.getProxyUsername());
                 configuration.setProxyPassword(properties.getProxyPassword());

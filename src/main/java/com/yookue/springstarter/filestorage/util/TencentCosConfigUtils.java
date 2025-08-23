@@ -71,7 +71,7 @@ public abstract class TencentCosConfigUtils {
         ObjectUtilsWraps.ifNotNull(properties.getConnectionRequestTimeout(), item -> clientConfig.setConnectionRequestTimeout((int) item.toMillis()));
         if (StringUtils.isNotBlank(properties.getProxyHost())) {
             clientConfig.setHttpProxyIp(properties.getProxyHost());
-            ObjectUtilsWraps.ifNotNull(properties.getProxyPort(), clientConfig::setHttpProxyPort);
+            clientConfig.setHttpProxyPort(properties.getProxyPort());
             if (StringUtils.isNotBlank(properties.getProxyUsername())) {
                 clientConfig.setProxyUsername(properties.getProxyUsername());
                 clientConfig.setProxyPassword(properties.getProxyPassword());
