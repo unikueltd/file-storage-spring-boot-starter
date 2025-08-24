@@ -161,7 +161,7 @@ public class TencentFileStorageComposer implements FileStorageComposer, Initiali
             return null;
         }
         if (DurationUtilsWraps.isNotPositive(expiration)) {
-            return FileObjectStorageUtils.buildObjectUrl(FileStorageType.TENCENT, objectPath, properties.getDomain(), properties.getEndpoint(), properties.getBucketName(), BooleanUtils.isTrue(properties.getSecureHttp()));
+            return FileObjectStorageUtils.buildObjectUrl(FileStorageType.TENCENT, objectPath, properties.getDomain(), properties.getEndpoint(), properties.getBucketName(), BooleanUtils.isTrue(properties.getSslEnabled()));
         }
         Date expiryDate = JdkDateWraps.plusTemporal(JdkDateWraps.getCurrentDateTime(), expiration);
         try {

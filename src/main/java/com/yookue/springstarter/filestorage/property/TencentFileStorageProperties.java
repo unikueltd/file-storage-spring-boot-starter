@@ -87,11 +87,11 @@ public class TencentFileStorageProperties implements Serializable {
     private CannedAccessControlList accessControl;
 
     /**
-     * Indicates the protocol to access endpoint, use HTTPS or HTTP
+     * Indicates the protocol to access endpoint, using HTTPS or HTTP
      * <p>
      * Default is {@code true}
      */
-    private Boolean secureHttp = true;
+    private Boolean sslEnabled = true;
 
     /**
      * Connection timeout

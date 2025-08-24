@@ -67,7 +67,7 @@ public abstract class AliyunOssConfigUtils {
         ObjectUtilsWraps.ifNotNull(properties.getConnectionTimeout(), item -> configuration.setConnectionTimeout((int) item.toMillis()));
         ObjectUtilsWraps.ifNotNull(properties.getSocketTimeout(), item -> configuration.setSocketTimeout((int) item.toMillis()));
         ObjectUtilsWraps.ifNotNull(properties.getMaxConnections(), configuration::setMaxConnections);
-        configuration.setProtocol(BooleanUtils.isTrue(properties.getSecureHttp()) ? Protocol.HTTPS : Protocol.HTTP);
+        configuration.setProtocol(BooleanUtils.isTrue(properties.getSslEnabled()) ? Protocol.HTTPS : Protocol.HTTP);
         if (StringUtils.isNotBlank(properties.getProxyHost())) {
             configuration.setProxyHost(properties.getProxyHost());
             configuration.setProxyPort(properties.getProxyPort());

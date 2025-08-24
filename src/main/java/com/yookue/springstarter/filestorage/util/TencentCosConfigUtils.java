@@ -64,7 +64,7 @@ public abstract class TencentCosConfigUtils {
         COSCredentials credentials = new BasicCOSCredentials(properties.getSecretId(), properties.getSecretKey());
         Region region = new Region(properties.getRegion());
         ClientConfig clientConfig = new ClientConfig(region);
-        clientConfig.setHttpProtocol(BooleanUtils.isTrue(properties.getSecureHttp()) ? HttpProtocol.https : HttpProtocol.http);
+        clientConfig.setHttpProtocol(BooleanUtils.isTrue(properties.getSslEnabled()) ? HttpProtocol.https : HttpProtocol.http);
         ObjectUtilsWraps.ifNotNull(properties.getConnectionTimeout(), item -> clientConfig.setConnectionTimeout((int) item.toMillis()));
         ObjectUtilsWraps.ifNotNull(properties.getSocketTimeout(), item -> clientConfig.setSocketTimeout((int) item.toMillis()));
         ObjectUtilsWraps.ifNotNull(properties.getMaxConnections(), clientConfig::setMaxConnectionsCount);
