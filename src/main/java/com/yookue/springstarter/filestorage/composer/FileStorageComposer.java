@@ -256,20 +256,20 @@ public interface FileStorageComposer {
     String getObjectUrl(@Nullable String objectKey, @Nullable String pathPrefix, @Nullable Duration expiration);
 
     /**
-     * Returns the storage raw client
+     * Returns the raw storage client
      *
-     * @return the storage raw client
+     * @return the raw storage client
      */
     default Object getRawClient() {
         return null;
     }
 
     /**
-     * Returns the storage raw client as an expected type
+     * Returns the raw storage client as an expected type
      *
-     * @param expectType The expected type of the storage raw client
+     * @param expectType The expected type of the raw storage client
      *
-     * @return the storage raw client as an expected type
+     * @return the raw storage client as an expected type
      */
     default <T> T getRawClientAs(@Nullable Class<T> expectType) {
         return ObjectUtilsWraps.castAs(getRawClient(), expectType);
