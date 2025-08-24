@@ -71,7 +71,7 @@ public class FileStorageAutoConfiguration {
         })
         @ConditionalOnMissingBean
         public FileStorageComposer localFileStorageComposer(@Nonnull FileStorageProperties properties) {
-            return new LocalFileStorageComposer(properties.getLocal(), BooleanUtils.isTrue(properties.getConcatDate()));
+            return new LocalFileStorageComposer(properties.getLocal(), BooleanUtils.isTrue(properties.getConcatDate()), BooleanUtils.isTrue(properties.getPublishEvent()));
         }
 
         @Bean
@@ -82,7 +82,7 @@ public class FileStorageAutoConfiguration {
         @ConditionalOnClass(value = io.minio.MinioClient.class)
         @ConditionalOnMissingBean
         public FileStorageComposer minioFileStorageComposer(@Nonnull FileStorageProperties properties) {
-            return new MinioFileStorageComposer(properties.getMinio(), BooleanUtils.isTrue(properties.getConcatDate()));
+            return new MinioFileStorageComposer(properties.getMinio(), BooleanUtils.isTrue(properties.getConcatDate()), BooleanUtils.isTrue(properties.getPublishEvent()));
         }
 
         @Bean
@@ -93,7 +93,7 @@ public class FileStorageAutoConfiguration {
         @ConditionalOnClass(value = com.aliyun.oss.OSS.class)
         @ConditionalOnMissingBean
         public FileStorageComposer aliyunFileStorageComposer(@Nonnull FileStorageProperties properties) {
-            return new AliyunFileStorageComposer(properties.getAliyun(), BooleanUtils.isTrue(properties.getConcatDate()));
+            return new AliyunFileStorageComposer(properties.getAliyun(), BooleanUtils.isTrue(properties.getConcatDate()), BooleanUtils.isTrue(properties.getPublishEvent()));
         }
 
         @Bean
@@ -104,7 +104,7 @@ public class FileStorageAutoConfiguration {
         @ConditionalOnClass(value = com.qcloud.cos.COSClient.class)
         @ConditionalOnMissingBean
         public FileStorageComposer tencentFileStorageComposer(@Nonnull FileStorageProperties properties) {
-            return new TencentFileStorageComposer(properties.getTencent(), BooleanUtils.isTrue(properties.getConcatDate()));
+            return new TencentFileStorageComposer(properties.getTencent(), BooleanUtils.isTrue(properties.getConcatDate()), BooleanUtils.isTrue(properties.getPublishEvent()));
         }
     }
 }

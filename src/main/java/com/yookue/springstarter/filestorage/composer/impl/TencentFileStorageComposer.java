@@ -28,6 +28,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.model.COSObject;
 import com.qcloud.cos.model.ObjectMetadata;
@@ -38,11 +40,14 @@ import com.yookue.commonplexus.javaseutil.util.JdkDateWraps;
 import com.yookue.commonplexus.javaseutil.util.LocalDateWraps;
 import com.yookue.springstarter.filestorage.composer.FileStorageComposer;
 import com.yookue.springstarter.filestorage.enumeration.FileStorageType;
+import com.yookue.springstarter.filestorage.event.FileStorageRemovedEvent;
+import com.yookue.springstarter.filestorage.event.FileStorageUploadedEvent;
 import com.yookue.springstarter.filestorage.exception.FileStorageException;
 import com.yookue.springstarter.filestorage.property.TencentFileStorageProperties;
 import com.yookue.springstarter.filestorage.util.FileObjectStorageUtils;
 import com.yookue.springstarter.filestorage.util.TencentCosConfigUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 
 /**
@@ -52,10 +57,14 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
-public class TencentFileStorageComposer implements FileStorageComposer, InitializingBean, DisposableBean {
+public class TencentFileStorageComposer implements FileStorageComposer, ApplicationEventPublisherAware, InitializingBean, DisposableBean {
     private final TencentFileStorageProperties properties;
     private final boolean concatDate;
+    private final boolean publishEvent;
     private COSClient cosClient;
+
+    @Setter
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -110,6 +119,9 @@ public class TencentFileStorageComposer implements FileStorageComposer, Initiali
             // Use objectPath instead of objectKey to avoid the problem of all objects are under the root bucket
             PutObjectRequest request = new PutObjectRequest(properties.getBucketName(), objectPath, content, objectMetadata);
             cosClient.putObject(request);
+            if (publishEvent) {
+                applicationEventPublisher.publishEvent(new FileStorageUploadedEvent(objectKey, pathPrefix, FileStorageType.TENCENT));
+            }
             return objectKey;
         } catch (Exception ex) {
             throw new FileStorageException(ex);
@@ -134,7 +146,7 @@ public class TencentFileStorageComposer implements FileStorageComposer, Initiali
     }
 
     @Override
-    @SuppressWarnings("DuplicatedCode")
+    @SuppressWarnings("DataFlowIssue")
     public void removeObject(@Nullable String objectKey, @Nullable String pathPrefix) throws FileStorageException {
         if (StringUtils.isAnyBlank(objectKey, properties.getBucketName())) {
             return;
@@ -145,6 +157,9 @@ public class TencentFileStorageComposer implements FileStorageComposer, Initiali
         }
         try {
             cosClient.deleteObject(properties.getBucketName(), objectPath);
+            if (publishEvent) {
+                applicationEventPublisher.publishEvent(new FileStorageRemovedEvent(objectKey, pathPrefix, FileStorageType.TENCENT));
+            }
         } catch (Exception ex) {
             throw new FileStorageException(ex);
         }

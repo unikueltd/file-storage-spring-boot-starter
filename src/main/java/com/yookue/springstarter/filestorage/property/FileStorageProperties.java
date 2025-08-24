@@ -52,6 +52,13 @@ public class FileStorageProperties implements Serializable {
     private Boolean concatDate = true;
 
     /**
+     * Indicates whether to publish event when an object is uploaded or removed
+     * <p>
+     * Default is {@code true}
+     */
+    private Boolean publishEvent = true;
+
+    /**
      * The storage type pointer to the corresponding properties
      */
     private FileStorageType storageType;

@@ -31,6 +31,8 @@ import jakarta.annotation.Nullable;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import com.yookue.commonplexus.javaseutil.constant.CharVariantConst;
 import com.yookue.commonplexus.javaseutil.identity.JdkUuidGenerator;
 import com.yookue.commonplexus.javaseutil.util.FileUtilsWraps;
@@ -38,10 +40,13 @@ import com.yookue.commonplexus.javaseutil.util.LocalDateWraps;
 import com.yookue.commonplexus.javaseutil.util.StringUtilsWraps;
 import com.yookue.springstarter.filestorage.composer.FileStorageComposer;
 import com.yookue.springstarter.filestorage.enumeration.FileStorageType;
+import com.yookue.springstarter.filestorage.event.FileStorageRemovedEvent;
+import com.yookue.springstarter.filestorage.event.FileStorageUploadedEvent;
 import com.yookue.springstarter.filestorage.exception.FileStorageException;
 import com.yookue.springstarter.filestorage.property.LocalFileStorageProperties;
 import com.yookue.springstarter.filestorage.util.FileObjectStorageUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 
 /**
@@ -50,10 +55,14 @@ import lombok.RequiredArgsConstructor;
  * @author David Hsing
  */
 @RequiredArgsConstructor
-@SuppressWarnings({"unused", "ClassCanBeRecord"})
-public class LocalFileStorageComposer implements FileStorageComposer, InitializingBean {
+@SuppressWarnings("unused")
+public class LocalFileStorageComposer implements FileStorageComposer, ApplicationEventPublisherAware, InitializingBean {
     private final LocalFileStorageProperties properties;
     private final boolean concatDate;
+    private final boolean publishEvent;
+
+    @Setter
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -96,6 +105,9 @@ public class LocalFileStorageComposer implements FileStorageComposer, Initializi
             Path target = Paths.get(properties.getEntryPath(), objectPath).normalize();
             FileUtils.forceMkdirParent(target.toFile());
             Files.copy(content, target, StandardCopyOption.REPLACE_EXISTING);
+            if (publishEvent) {
+                applicationEventPublisher.publishEvent(new FileStorageUploadedEvent(objectKey, pathPrefix, FileStorageType.LOCAL));
+            }
             return objectKey;
         } catch (Exception ex) {
             throw new FileStorageException(ex);
@@ -117,6 +129,7 @@ public class LocalFileStorageComposer implements FileStorageComposer, Initializi
     }
 
     @Override
+    @SuppressWarnings("DataFlowIssue")
     public void removeObject(@Nullable String objectKey, @Nullable String pathPrefix) throws FileStorageException {
         String objectPath = FileObjectStorageUtils.recurObjectPath(objectKey, pathPrefix);
         if (StringUtils.isBlank(objectPath)) {
@@ -125,6 +138,9 @@ public class LocalFileStorageComposer implements FileStorageComposer, Initializi
         try {
             Path fullPath = Paths.get(properties.getEntryPath(), objectPath).normalize();
             Files.deleteIfExists(fullPath);
+            if (publishEvent) {
+                applicationEventPublisher.publishEvent(new FileStorageRemovedEvent(objectKey, pathPrefix, FileStorageType.LOCAL));
+            }
         } catch (Exception ex) {
             throw new FileStorageException(ex);
         }

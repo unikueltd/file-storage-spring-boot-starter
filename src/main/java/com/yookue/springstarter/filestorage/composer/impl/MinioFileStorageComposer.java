@@ -29,6 +29,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import com.yookue.commonplexus.javaseutil.constant.CharVariantConst;
 import com.yookue.commonplexus.javaseutil.identity.JdkUuidGenerator;
 import com.yookue.commonplexus.javaseutil.util.DurationUtilsWraps;
@@ -36,6 +38,8 @@ import com.yookue.commonplexus.javaseutil.util.LocalDateWraps;
 import com.yookue.commonplexus.springutil.util.MinioConfigWraps;
 import com.yookue.springstarter.filestorage.composer.FileStorageComposer;
 import com.yookue.springstarter.filestorage.enumeration.FileStorageType;
+import com.yookue.springstarter.filestorage.event.FileStorageRemovedEvent;
+import com.yookue.springstarter.filestorage.event.FileStorageUploadedEvent;
 import com.yookue.springstarter.filestorage.exception.FileStorageException;
 import com.yookue.springstarter.filestorage.property.MinioFileStorageProperties;
 import com.yookue.springstarter.filestorage.util.FileObjectStorageUtils;
@@ -48,6 +52,7 @@ import io.minio.RemoveObjectArgs;
 import io.minio.StatObjectArgs;
 import io.minio.http.Method;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 
 /**
@@ -57,10 +62,14 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
-public class MinioFileStorageComposer implements FileStorageComposer, InitializingBean, DisposableBean {
+public class MinioFileStorageComposer implements FileStorageComposer, ApplicationEventPublisherAware, InitializingBean, DisposableBean {
     private final MinioFileStorageProperties properties;
     private final boolean concatDate;
+    private final boolean publishEvent;
     private MinioClient minioClient;
+
+    @Setter
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -114,6 +123,9 @@ public class MinioFileStorageComposer implements FileStorageComposer, Initializi
             }
             PutObjectArgs objectArgs = PutObjectArgs.builder().bucket(properties.getBucketName()).object(objectPath).stream(content, content.available(), -1).headers(headers).build();
             minioClient.putObject(objectArgs);
+            if (publishEvent) {
+                applicationEventPublisher.publishEvent(new FileStorageUploadedEvent(objectKey, pathPrefix, FileStorageType.MINIO));
+            }
             return objectKey;
         } catch (Exception ex) {
             throw new FileStorageException(ex);
@@ -138,6 +150,7 @@ public class MinioFileStorageComposer implements FileStorageComposer, Initializi
     }
 
     @Override
+    @SuppressWarnings("DataFlowIssue")
     public void removeObject(@Nullable String objectKey, @Nullable String pathPrefix) throws FileStorageException {
         if (StringUtils.isAnyBlank(objectKey, properties.getBucketName())) {
             return;
@@ -149,6 +162,9 @@ public class MinioFileStorageComposer implements FileStorageComposer, Initializi
         try {
             RemoveObjectArgs objectArgs = RemoveObjectArgs.builder().bucket(properties.getBucketName()).object(objectPath).build();
             minioClient.removeObject(objectArgs);
+            if (publishEvent) {
+                applicationEventPublisher.publishEvent(new FileStorageRemovedEvent(objectKey, pathPrefix, FileStorageType.MINIO));
+            }
         } catch (Exception ex) {
             throw new FileStorageException(ex);
         }

@@ -28,6 +28,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.Callback;
 import com.aliyun.oss.model.OSSObject;
@@ -40,11 +42,14 @@ import com.yookue.commonplexus.javaseutil.util.LocalDateWraps;
 import com.yookue.commonplexus.javaseutil.util.ObjectUtilsWraps;
 import com.yookue.springstarter.filestorage.composer.FileStorageComposer;
 import com.yookue.springstarter.filestorage.enumeration.FileStorageType;
+import com.yookue.springstarter.filestorage.event.FileStorageRemovedEvent;
+import com.yookue.springstarter.filestorage.event.FileStorageUploadedEvent;
 import com.yookue.springstarter.filestorage.exception.FileStorageException;
 import com.yookue.springstarter.filestorage.property.AliyunFileStorageProperties;
 import com.yookue.springstarter.filestorage.util.AliyunOssConfigUtils;
 import com.yookue.springstarter.filestorage.util.FileObjectStorageUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 
 /**
@@ -54,10 +59,14 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
-public class AliyunFileStorageComposer implements FileStorageComposer, InitializingBean, DisposableBean {
+public class AliyunFileStorageComposer implements FileStorageComposer, ApplicationEventPublisherAware, InitializingBean, DisposableBean {
     private final AliyunFileStorageProperties properties;
     private final boolean concatDate;
+    private final boolean publishEvent;
     private OSS ossClient;
+
+    @Setter
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -114,6 +123,9 @@ public class AliyunFileStorageComposer implements FileStorageComposer, Initializ
             Callback callback = AliyunOssConfigUtils.callback(properties);
             ObjectUtilsWraps.ifNotNull(callback, request::setCallback);
             ossClient.putObject(request);
+            if (publishEvent) {
+                applicationEventPublisher.publishEvent(new FileStorageUploadedEvent(objectKey, pathPrefix, FileStorageType.ALIYUN));
+            }
             return objectKey;
         } catch (Exception ex) {
             throw new FileStorageException(ex);
@@ -138,7 +150,7 @@ public class AliyunFileStorageComposer implements FileStorageComposer, Initializ
     }
 
     @Override
-    @SuppressWarnings("DuplicatedCode")
+    @SuppressWarnings("DataFlowIssue")
     public void removeObject(@Nullable String objectKey, @Nullable String pathPrefix) throws FileStorageException {
         if (StringUtils.isAnyBlank(objectKey, properties.getBucketName())) {
             return;
@@ -149,6 +161,9 @@ public class AliyunFileStorageComposer implements FileStorageComposer, Initializ
         }
         try {
             ossClient.deleteObject(properties.getBucketName(), objectPath);
+            if (publishEvent) {
+                applicationEventPublisher.publishEvent(new FileStorageRemovedEvent(objectKey, pathPrefix, FileStorageType.ALIYUN));
+            }
         } catch (Exception ex) {
             throw new FileStorageException(ex);
         }
