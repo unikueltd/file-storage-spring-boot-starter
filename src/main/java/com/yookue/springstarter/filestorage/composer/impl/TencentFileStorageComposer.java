@@ -55,7 +55,6 @@ import lombok.RequiredArgsConstructor;
 public class TencentFileStorageComposer implements FileStorageComposer, InitializingBean, DisposableBean {
     private final TencentFileStorageProperties properties;
     private final boolean concatDate;
-
     private COSClient cosClient;
 
     @Override

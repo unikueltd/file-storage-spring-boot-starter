@@ -57,7 +57,6 @@ import lombok.RequiredArgsConstructor;
 public class AliyunFileStorageComposer implements FileStorageComposer, InitializingBean, DisposableBean {
     private final AliyunFileStorageProperties properties;
     private final boolean concatDate;
-
     private OSS ossClient;
 
     @Override

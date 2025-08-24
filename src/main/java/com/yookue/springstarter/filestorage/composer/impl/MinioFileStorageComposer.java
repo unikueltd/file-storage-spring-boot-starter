@@ -60,7 +60,6 @@ import lombok.RequiredArgsConstructor;
 public class MinioFileStorageComposer implements FileStorageComposer, InitializingBean, DisposableBean {
     private final MinioFileStorageProperties properties;
     private final boolean concatDate;
-
     private MinioClient minioClient;
 
     @Override
@@ -167,7 +166,7 @@ public class MinioFileStorageComposer implements FileStorageComposer, Initializi
         }
         if (DurationUtilsWraps.isNotPositive(expiration)) {
             String endpoint = StringUtils.join(properties.getEndpoint(), CharVariantConst.COLON, properties.getPort());
-            return FileObjectStorageUtils.buildObjectUrl(FileStorageType.MINIO, objectPath, null, endpoint, properties.getBucketName(), BooleanUtils.isTrue(properties.getSecureHttp()));
+            return FileObjectStorageUtils.buildObjectUrl(FileStorageType.MINIO, objectPath, null, endpoint, properties.getBucketName(), BooleanUtils.isTrue(properties.getSslEnabled()));
         }
         try {
             GetPresignedObjectUrlArgs objectArgs = GetPresignedObjectUrlArgs.builder().bucket(properties.getBucketName()).object(objectPath).method(Method.GET).expiry(DurationUtilsWraps.toSecondsInteger(expiration)).build();
