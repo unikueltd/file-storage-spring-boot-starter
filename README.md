@@ -58,26 +58,26 @@ public class DemoService {
     private FileStorageComposer storageComposer;
 
     public void demoMethod() {
-        // Upload a file, or a pure text, or a byte array, or an input stream
+        // Uploads a file, or a pure text, or a byte array, or an input stream
         storageComposer.uploadObject();
 
-        // Check if exist an object
+        // Checks if exist an object
         storageComposer.existsObject(objectKey, pathPrefix);
 
-        // Download an object as an input stream
+        // Downloads an object as an input stream
         storageComposer.downloadObject(objectKey, pathPrefix);
 
-        // Download an object as a file
+        // Downloads an object as a file
         storageComposer.downloadObjectTo(objectKey, pathPrefix, targetFile);
 
-        // Remove an object
+        // Removes an object
         storageComposer.removeObject(objectKey, pathPrefix);
 
-        // Get the object URL
+        // Gets the object URL
         storageComposer.getObjectUrl(objectKey, pathPrefix);
         storageComposer.getObjectUrl(objectKey, pathPrefix, expiration);
         
-        // Or get the raw client for advanced usage
+        // Gets the raw client for advanced usage
         storageComposer.getRawClient();
         storageComposer.getRawClientAs(expectType);
     }
