@@ -37,12 +37,14 @@ spring:
             endpoint: 'https://oss-cn-beijing.aliyuncs.com'
             access-key: 'your-access-key'
             secret-key: 'your-secret-key'
+            region: 'cn-beijing'
             bucket-name: 'demo-bucket'
             access-control: 'public-read'
         tencent:
             endpoint: 'https://cos.ap-beijing.myqcloud.com'
             secret-id: 'your-secret-id'
             secret-key: 'your-secret-key'
+            region: 'ap-beijing'
             bucket-name: 'demo-bucket'
             access-control: 'public-read'
 ```
