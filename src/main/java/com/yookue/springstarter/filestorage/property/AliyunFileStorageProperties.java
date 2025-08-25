@@ -64,7 +64,7 @@ public class AliyunFileStorageProperties implements Serializable {
     /**
      * The region of the OSS service
      * <p>
-     * For example: "cn-hangzhou"
+     * For example: "cn-beijing"
      */
     private String region;
 
