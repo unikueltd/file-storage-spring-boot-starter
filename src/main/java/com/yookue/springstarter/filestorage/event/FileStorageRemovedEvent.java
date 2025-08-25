@@ -20,6 +20,7 @@ package com.yookue.springstarter.filestorage.event;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.context.ApplicationEvent;
+import com.yookue.commonplexus.javaseutil.util.ObjectUtilsWraps;
 import com.yookue.springstarter.filestorage.enumeration.FileStorageType;
 import lombok.Getter;
 
@@ -32,14 +33,17 @@ import lombok.Getter;
 @Getter
 @SuppressWarnings("unused")
 public class FileStorageRemovedEvent extends ApplicationEvent {
-    private final String objectKey;
     private final String pathPrefix;
     private final FileStorageType storageType;
 
     public FileStorageRemovedEvent(@Nonnull String objectKey, @Nullable String pathPrefix, @Nonnull FileStorageType storageType) {
         super(objectKey);
-        this.objectKey = objectKey;
         this.pathPrefix = pathPrefix;
         this.storageType = storageType;
+    }
+
+    @Nonnull
+    public String getObjectKey() {
+        return ObjectUtilsWraps.castAsString(super.getSource());
     }
 }
