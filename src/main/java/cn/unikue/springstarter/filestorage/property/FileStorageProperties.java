@@ -1,0 +1,89 @@
+/*
+ * Copyright (c) 2025 Unikue Ltd. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package cn.unikue.springstarter.filestorage.property;
+
+
+import java.io.Serializable;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import cn.unikue.springstarter.filestorage.config.FileStorageAutoConfiguration;
+import cn.unikue.springstarter.filestorage.enumeration.FileStorageType;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+
+/**
+ * Properties for file storage
+ *
+ * @author David Hsing
+ */
+@ConfigurationProperties(prefix = FileStorageAutoConfiguration.PROPERTIES_PREFIX)
+@Getter
+@Setter
+@ToString
+public class FileStorageProperties implements Serializable {
+    /**
+     * Indicates whether to enable this starter or not
+     * <p>
+     * Default is {@code true}
+     */
+    private Boolean enabled = true;
+
+    /**
+     * Indicates whether to prepend date before the file key
+     * <p>
+     * Default is {@code true}
+     */
+    private Boolean concatDate = true;
+
+    /**
+     * Indicates whether to publish event when an object is uploaded or removed
+     * <p>
+     * Default is {@code true}
+     */
+    private Boolean publishEvent = true;
+
+    /**
+     * The storage type pointer to the corresponding properties
+     */
+    private FileStorageType storageType;
+
+    /**
+     * The properties of local storage
+     */
+    @NestedConfigurationProperty
+    private final LocalFileStorageProperties local = new LocalFileStorageProperties();
+
+    /**
+     * The properties of minio storage
+     */
+    @NestedConfigurationProperty
+    private final MinioFileStorageProperties minio = new MinioFileStorageProperties();
+
+    /**
+     * The properties of aliyun-oss storage
+     */
+    @NestedConfigurationProperty
+    private final AliyunFileStorageProperties aliyun = new AliyunFileStorageProperties();
+
+    /**
+     * The properties of tencent-cos storage
+     */
+    @NestedConfigurationProperty
+    private final TencentFileStorageProperties tencent = new TencentFileStorageProperties();
+}
