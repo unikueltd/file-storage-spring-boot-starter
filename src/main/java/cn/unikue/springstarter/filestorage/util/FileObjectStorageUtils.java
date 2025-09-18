@@ -117,28 +117,21 @@ public abstract class FileObjectStorageUtils {
     @Nullable
     public static String buildObjectUrl(@Nullable FileStorageType storageType, @Nullable String objectPath, @Nullable String domain, @Nullable String endpoint, @Nullable String bucket, boolean secureHttp) {
         String pathAlias = FilenameUtils.separatorsToUnix(FilenamePlainWraps.removeStartSlashes(objectPath));
-        if (StringUtils.isBlank(pathAlias) || StringUtils.isAllBlank(domain, endpoint)) {
+        String protocol = null;
+        if (StringUtils.isBlank(domain)) {
+            protocol = (secureHttp || StringUtils.startsWithIgnoreCase(endpoint, InetProtocolType.HTTPS.getValueWithDelimiter())) ? InetProtocolType.HTTPS.getValue() : InetProtocolType.HTTP.getValue();
+        } else if (StringUtils.isBlank(endpoint)) {
+            protocol = StringUtils.startsWithIgnoreCase(domain, InetProtocolType.HTTPS.getValueWithDelimiter()) ? InetProtocolType.HTTPS.getValue() : InetProtocolType.HTTP.getValue();
+        }
+        domain = StringUtilsWraps.removeStartIgnoreCase(FilenamePlainWraps.removeEndSlashes(domain), InetProtocolType.HTTP.getValueWithDelimiter(), InetProtocolType.HTTPS.getValueWithDelimiter());
+        endpoint = StringUtilsWraps.removeStartIgnoreCase(FilenamePlainWraps.removeEndSlashes(endpoint), InetProtocolType.HTTP.getValueWithDelimiter(), InetProtocolType.HTTPS.getValueWithDelimiter());
+        if (StringUtils.isAnyBlank(protocol, bucket, pathAlias) || StringUtils.isAllBlank(domain, endpoint)) {
             return null;
-        }
-        if (StringUtils.isNotBlank(domain)) {
-            if (!StringUtilsWraps.startsWithAnyIgnoreCase(domain, InetProtocolType.HTTP.getValueWithDelimiter(), InetProtocolType.HTTPS.getValueWithDelimiter())) {
-                domain = StringUtilsWraps.prependIfMissing(domain, secureHttp ? InetProtocolType.HTTPS.getValueWithDelimiter() : InetProtocolType.HTTP.getValueWithDelimiter());
-            }
-            return StringUtilsWraps.joinOnce(CharVariantConst.SLASH, domain, pathAlias);
-        }
-        if (StringUtils.isAnyBlank(endpoint, bucket)) {
-            return null;
-        }
-        String protocol = (secureHttp || StringUtils.startsWithIgnoreCase(endpoint, InetProtocolType.HTTPS.getValueWithDelimiter())) ? InetProtocolType.HTTPS.getValue() : InetProtocolType.HTTP.getValue();
-        if (StringUtils.startsWithIgnoreCase(endpoint, InetProtocolType.HTTP.getValueWithDelimiter())) {
-            endpoint = StringUtils.substring(endpoint, 7);
-        } else if (StringUtils.startsWithIgnoreCase(endpoint, InetProtocolType.HTTPS.getValueWithDelimiter())) {
-            endpoint = StringUtils.substring(endpoint, 8);
         }
         if (storageType == FileStorageType.MINIO) {
-            return String.format("%s://%s/%s/%s", protocol, endpoint, bucket, pathAlias);    // $NON-NLS-1$
+            return String.format("%s://%s/%s/%s", protocol, StringUtils.defaultIfBlank(domain, endpoint), bucket, pathAlias);    // $NON-NLS-1$
         } else if (storageType == FileStorageType.ALIYUN || storageType == FileStorageType.TENCENT) {
-            return String.format("%s://%s.%s/%s", protocol, bucket, endpoint, pathAlias);    // $NON-NLS-1$
+            return String.format("%s://%s.%s/%s", protocol, bucket, StringUtils.defaultIfBlank(domain, endpoint), pathAlias);    // $NON-NLS-1$
         }
         return null;
     }

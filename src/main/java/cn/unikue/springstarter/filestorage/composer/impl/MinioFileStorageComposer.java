@@ -31,18 +31,6 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import cn.unikue.commonplexus.javaseutil.constant.CharVariantConst;
-import cn.unikue.commonplexus.javaseutil.identity.JdkUuidGenerator;
-import cn.unikue.commonplexus.javaseutil.util.DurationUtilsWraps;
-import cn.unikue.commonplexus.javaseutil.util.LocalDateWraps;
-import cn.unikue.commonplexus.springutil.util.MinioConfigWraps;
-import cn.unikue.springstarter.filestorage.composer.FileStorageComposer;
-import cn.unikue.springstarter.filestorage.enumeration.FileStorageType;
-import cn.unikue.springstarter.filestorage.event.FileStorageRemovedEvent;
-import cn.unikue.springstarter.filestorage.event.FileStorageUploadedEvent;
-import cn.unikue.springstarter.filestorage.exception.FileStorageException;
-import cn.unikue.springstarter.filestorage.property.MinioFileStorageProperties;
-import cn.unikue.springstarter.filestorage.util.FileObjectStorageUtils;
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;
 import io.minio.GetPresignedObjectUrlArgs;
@@ -51,6 +39,19 @@ import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import io.minio.StatObjectArgs;
 import io.minio.http.Method;
+import cn.unikue.commonplexus.javaseutil.constant.CharVariantConst;
+import cn.unikue.commonplexus.javaseutil.identity.JdkUuidGenerator;
+import cn.unikue.commonplexus.javaseutil.util.DurationUtilsWraps;
+import cn.unikue.commonplexus.javaseutil.util.LocalDateWraps;
+import cn.unikue.commonplexus.springutil.util.MinioConfigWraps;
+import cn.unikue.commonplexus.springutil.util.UriUtilsWraps;
+import cn.unikue.springstarter.filestorage.composer.FileStorageComposer;
+import cn.unikue.springstarter.filestorage.enumeration.FileStorageType;
+import cn.unikue.springstarter.filestorage.event.FileStorageRemovedEvent;
+import cn.unikue.springstarter.filestorage.event.FileStorageUploadedEvent;
+import cn.unikue.springstarter.filestorage.exception.FileStorageException;
+import cn.unikue.springstarter.filestorage.property.MinioFileStorageProperties;
+import cn.unikue.springstarter.filestorage.util.FileObjectStorageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
@@ -182,11 +183,12 @@ public class MinioFileStorageComposer implements FileStorageComposer, Applicatio
         }
         if (DurationUtilsWraps.isNotPositive(expiration)) {
             String endpoint = StringUtils.join(properties.getEndpoint(), CharVariantConst.COLON, properties.getPort());
-            return FileObjectStorageUtils.buildObjectUrl(FileStorageType.MINIO, objectPath, null, endpoint, properties.getBucketName(), BooleanUtils.isTrue(properties.getSslEnabled()));
+            return FileObjectStorageUtils.buildObjectUrl(FileStorageType.MINIO, objectPath, properties.getDomain(), endpoint, properties.getBucketName(), BooleanUtils.isTrue(properties.getSslEnabled()));
         }
         try {
             GetPresignedObjectUrlArgs objectArgs = GetPresignedObjectUrlArgs.builder().bucket(properties.getBucketName()).object(objectPath).method(Method.GET).expiry(DurationUtilsWraps.toSecondsInteger(expiration)).build();
-            return minioClient.getPresignedObjectUrl(objectArgs);
+            String url = minioClient.getPresignedObjectUrl(objectArgs);
+            return StringUtils.isBlank(properties.getDomain()) ? url : UriUtilsWraps.replaceSchemaHostPort(url, properties.getDomain());
         } catch (Exception ignored) {
         }
         return null;
