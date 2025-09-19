@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -40,9 +41,11 @@ import io.minio.RemoveObjectArgs;
 import io.minio.StatObjectArgs;
 import io.minio.http.Method;
 import cn.unikue.commonplexus.javaseutil.constant.CharVariantConst;
+import cn.unikue.commonplexus.javaseutil.enumeration.InetProtocolType;
 import cn.unikue.commonplexus.javaseutil.identity.JdkUuidGenerator;
 import cn.unikue.commonplexus.javaseutil.util.DurationUtilsWraps;
 import cn.unikue.commonplexus.javaseutil.util.LocalDateWraps;
+import cn.unikue.commonplexus.javaseutil.util.StringUtilsWraps;
 import cn.unikue.commonplexus.springutil.util.MinioConfigWraps;
 import cn.unikue.commonplexus.springutil.util.UriUtilsWraps;
 import cn.unikue.springstarter.filestorage.composer.FileStorageComposer;
@@ -182,7 +185,10 @@ public class MinioFileStorageComposer implements FileStorageComposer, Applicatio
             return null;
         }
         if (DurationUtilsWraps.isNotPositive(expiration)) {
-            String endpoint = StringUtils.join(properties.getEndpoint(), CharVariantConst.COLON, properties.getPort());
+            String endpoint = StringUtilsWraps.removeStartIgnoreCase(properties.getEndpoint(), InetProtocolType.HTTP.getValueWithDelimiter(), InetProtocolType.HTTPS.getValueWithDelimiter());
+            if (!StringUtils.contains(endpoint, CharVariantConst.COLON)) {
+                endpoint = StringUtils.join(endpoint, CharVariantConst.COLON, ObjectUtils.defaultIfNull(properties.getPort(), 9000));
+            }
             return FileObjectStorageUtils.buildObjectUrl(FileStorageType.MINIO, objectPath, properties.getDomain(), endpoint, properties.getBucketName(), BooleanUtils.isTrue(properties.getSslEnabled()));
         }
         try {
