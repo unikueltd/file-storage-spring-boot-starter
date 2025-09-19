@@ -117,11 +117,11 @@ public abstract class FileObjectStorageUtils {
     @Nullable
     public static String buildObjectUrl(@Nullable FileStorageType storageType, @Nullable String objectPath, @Nullable String domain, @Nullable String endpoint, @Nullable String bucket, boolean secureHttp) {
         String pathAlias = FilenameUtils.separatorsToUnix(FilenamePlainWraps.removeStartSlashes(objectPath));
-        String protocol = null;
-        if (StringUtils.isBlank(domain)) {
+        String protocol;
+        if (StringUtils.isNotBlank(domain)) {
+            protocol = (secureHttp || StringUtils.startsWithIgnoreCase(domain, InetProtocolType.HTTPS.getValueWithDelimiter())) ? InetProtocolType.HTTPS.getValue() : InetProtocolType.HTTP.getValue();
+        } else {
             protocol = (secureHttp || StringUtils.startsWithIgnoreCase(endpoint, InetProtocolType.HTTPS.getValueWithDelimiter())) ? InetProtocolType.HTTPS.getValue() : InetProtocolType.HTTP.getValue();
-        } else if (StringUtils.isBlank(endpoint)) {
-            protocol = StringUtils.startsWithIgnoreCase(domain, InetProtocolType.HTTPS.getValueWithDelimiter()) ? InetProtocolType.HTTPS.getValue() : InetProtocolType.HTTP.getValue();
         }
         domain = StringUtilsWraps.removeStartIgnoreCase(FilenamePlainWraps.removeEndSlashes(domain), InetProtocolType.HTTP.getValueWithDelimiter(), InetProtocolType.HTTPS.getValueWithDelimiter());
         endpoint = StringUtilsWraps.removeStartIgnoreCase(FilenamePlainWraps.removeEndSlashes(endpoint), InetProtocolType.HTTP.getValueWithDelimiter(), InetProtocolType.HTTPS.getValueWithDelimiter());
