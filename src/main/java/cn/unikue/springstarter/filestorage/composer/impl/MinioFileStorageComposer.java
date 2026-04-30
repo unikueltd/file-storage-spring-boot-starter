@@ -39,7 +39,7 @@ import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import io.minio.StatObjectArgs;
-import io.minio.http.Method;
+import io.minio.Http;
 import cn.unikue.commonplexus.javaseutil.constant.CharVariantConst;
 import cn.unikue.commonplexus.javaseutil.enumeration.InetProtocolType;
 import cn.unikue.commonplexus.javaseutil.identity.JdkUuidGenerator;
@@ -125,7 +125,7 @@ public class MinioFileStorageComposer implements FileStorageComposer, Applicatio
             if (metadataProvider != null) {
                 metadataProvider.accept(headers);
             }
-            PutObjectArgs objectArgs = PutObjectArgs.builder().bucket(properties.getBucketName()).object(objectPath).stream(content, content.available(), -1).headers(headers).build();
+            PutObjectArgs objectArgs = PutObjectArgs.builder().bucket(properties.getBucketName()).object(objectPath).stream(content, -1L, -1L).headers(headers).build();
             minioClient.putObject(objectArgs);
             if (publishEvent) {
                 applicationEventPublisher.publishEvent(new FileStorageUploadedEvent(objectKey, pathPrefix, FileStorageType.MINIO));
@@ -192,7 +192,7 @@ public class MinioFileStorageComposer implements FileStorageComposer, Applicatio
             return FileObjectStorageUtils.buildObjectUrl(FileStorageType.MINIO, objectPath, properties.getDomain(), endpoint, properties.getBucketName(), BooleanUtils.isTrue(properties.getSslEnabled()));
         }
         try {
-            GetPresignedObjectUrlArgs objectArgs = GetPresignedObjectUrlArgs.builder().bucket(properties.getBucketName()).object(objectPath).method(Method.GET).expiry(DurationUtilsWraps.toSecondsInteger(expiration)).build();
+            GetPresignedObjectUrlArgs objectArgs = GetPresignedObjectUrlArgs.builder().bucket(properties.getBucketName()).object(objectPath).method(Http.Method.GET).expiry(DurationUtilsWraps.toSecondsInteger(expiration)).build();
             String url = minioClient.getPresignedObjectUrl(objectArgs);
             return StringUtils.isBlank(properties.getDomain()) ? url : UriUtilsWraps.replaceSchemaHostPort(url, properties.getDomain());
         } catch (Exception ignored) {
