@@ -64,7 +64,7 @@ public abstract class FileObjectStorageUtils {
             builder.append(LocalDateWraps.formatDate(ObjectUtils.defaultIfNull(date, LocalDateWraps.getCurrentDate()), TemporalFormatConst.RAW_YYYYMMDD));
             builder.append(CharVariantConst.HYPHEN);
         }
-        builder.append(StringUtils.defaultIfBlank(serialId, JdkUuidGenerator.getPopularId()));
+        builder.append(StringUtils.defaultIfBlank(serialId, JdkUuidGenerator.getRandomId()));
         StringUtilsWraps.ifNotBlank(FilenamePlainWraps.removeExtensionDot(extension), item -> builder.append(CharVariantConst.HYPHEN).append(item.toLowerCase()));
         return builder.toString();
     }
@@ -97,7 +97,7 @@ public abstract class FileObjectStorageUtils {
             builder.append(LocalDateWraps.formatDate(ObjectUtils.defaultIfNull(date, LocalDateWraps.getCurrentDate()), TemporalFormatConst.EUR_YYYYMMDD));
             builder.append(CharVariantConst.SLASH);
         }
-        builder.append(StringUtils.defaultIfBlank(serialId, JdkUuidGenerator.getPopularId()));
+        builder.append(StringUtils.defaultIfBlank(serialId, JdkUuidGenerator.getRandomId()));
         StringUtilsWraps.ifNotBlank(FilenamePlainWraps.removeExtensionDot(extension), item -> builder.append(CharVariantConst.DOT).append(item.toLowerCase()));
         return builder.toString();
     }

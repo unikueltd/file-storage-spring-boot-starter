@@ -97,7 +97,7 @@ public class LocalFileStorageComposer implements FileStorageComposer, Applicatio
         if (content == null) {
             return null;
         }
-        String serialId = JdkUuidGenerator.getPopularId();
+        String serialId = JdkUuidGenerator.getRandomId();
         LocalDate currentDate = LocalDateWraps.getCurrentDate();
         String objectKey = FileObjectStorageUtils.buildObjectKey(serialId, extension, concatDate, currentDate);
         String objectPath = FileObjectStorageUtils.buildObjectPath(serialId, extension, concatDate, currentDate, pathPrefix);
